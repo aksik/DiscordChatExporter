@@ -648,6 +648,20 @@ public class DiscordClient(string token)
         }
     }
 
+    public async Task<Message[]?> GetLast50MessagesAsync(Snowflake channelId)
+    {
+        var url = new UrlBuilder()
+            .SetPath($"channels/{channelId}/messages")
+            .SetQueryParameter("limit", "50")
+            .Build();
+
+        var response = await GetJsonResponseAsync(url);
+
+        var messages = response.EnumerateArray().Select(Message.Parse).ToArray();
+
+        return messages;
+    }
+
     public async IAsyncEnumerable<User> GetMessageReactionsAsync(
         Snowflake channelId,
         Snowflake messageId,
